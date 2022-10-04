@@ -26,23 +26,58 @@ const post = () => {
 }
 
 const put = () => {
-    console.log('put');
+    const data = {
+        id: 1,
+        title: 'LaraVue',
+        body: 'Teste body',
+        userId: 1
+    };
+
+    axios.put('https://jsonplaceholder.typicode.com/posts/1', data)
+        .then((response) => renderOutput(response));
 }
 
 const patch = () => {
-    console.log('patch');
+    const data = {
+        title: 'LaraVuePatch',
+    };
+
+    axios.patch('https://jsonplaceholder.typicode.com/posts/1', data)
+        .then((response) => renderOutput(response));
 }
 
 const del = () => {
-    console.log('delete');
+    axios.delete('https://jsonplaceholder.typicode.com/posts/2')
+        .then((response) => renderOutput(response));
 }
 
 const multiple = () => {
-    console.log('multiple');
+    Promise.all([
+        axios.get('https://jsonplaceholder.typicode.com/posts?_limit=5'),
+        axios.get('https://jsonplaceholder.typicode.com/users?_limit=5')
+    ]).then((response) => {
+        console.log(response[0].data);
+        console.log(response[1].data);
+    });
 }
 
 const transform = () => {
-    console.log('transform');
+    const config = {
+        params: {
+            _limit: 5
+        },
+
+        transformResponse: [function (data) {
+            return JSON.parse(data).map(o => {
+                return {
+                    fullAddress: 'Street: ' + o.address.street + ', Suite: ' + o.address.suite + ', City: ' + o.address.city + ', ZipCode: ' + o.address.zipcode
+                };
+            });
+        }],
+    };
+
+    axios.get('https://jsonplaceholder.typicode.com/users', config)
+        .then((response) => renderOutput(response));
 }
 
 const errorHandling = () => {
